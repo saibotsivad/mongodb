@@ -30,6 +30,7 @@ export const mongodb = ({
 		let result
 		try {
 			result = await fetch(url + '/action/' + name, {
+				method: 'POST',
 				headers: {
 					'content-type': 'application/json',
 					'access-control-request-headers': '*',

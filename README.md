@@ -42,6 +42,7 @@ Import the `{ mongodb }` function and instantiate with the following properties:
 * `cluster: string` - The name of the MongoDB cluster.
 * `database: string` - The name of the MongoDB database.
 * `collection: string` - The name of the collection to use for all requests, unless overridden.
+* `fetch: function` - The function used to make the POST requests. (Default: `globalThis.fetch`)
 
 Notes:
 
