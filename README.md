@@ -1,6 +1,6 @@
 # @saibotsivad/mongodb
 
-Simple wrapper for the MongoDB Data API.
+Simple wrapper for the [MongoDB Data API](https://docs.atlas.mongodb.com/api/data-api/).
 
 ## Install
 
