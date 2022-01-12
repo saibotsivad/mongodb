@@ -1,0 +1,14 @@
+# the usual culprits
+/node_modules
+.DS_Store
+
+# personal local files
+/configuration.js
+/configuration.sh
+/fiddle.js
+
+# globbed things
+globbed-*.js
+
+# built things
+/dist

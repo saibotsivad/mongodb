@@ -1,0 +1,46 @@
+{
+  "name": "@saibotsivad/mongodb",
+  "version": "0.0.0",
+  "description": "Simple wrapper for the MongoDB Data API.",
+  "type": "module",
+  "module": "dist/index.js",
+  "unpkg": "dist/index.min.js",
+  "main": "dist/index.cjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "eslint src/*.js",
+    "build": "bundt src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saibotsivad/mongodb.git"
+  },
+  "keywords": [
+    "mongodb",
+    "atlas",
+    "data",
+    "api"
+  ],
+  "author": {
+    "name": "Tobias Davis",
+    "email": "tobias@davistobias.com",
+    "url": "https://davistobias.com"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/saibotsivad/mongodb/issues"
+  },
+  "homepage": "https://github.com/saibotsivad/mongodb",
+  "devDependencies": {
+    "bundt": "github:saibotsivad/bundt",
+    "eslint": "^8.6.0",
+    "httpie": "^1.1.2"
+  }
+}
