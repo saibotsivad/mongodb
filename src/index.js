@@ -12,7 +12,7 @@ class MongoError extends Error {
 	}
 }
 
-export const mongodb = ({
+export function mongodb({
 	apiKey,
 	apiId,
 	apiRegion,
@@ -21,7 +21,7 @@ export const mongodb = ({
 	database,
 	collection,
 	fetch = globalThis.fetch,
-}) => {
+}) {
 	if (!apiUrl && !apiId || !apiKey || !cluster || !database) throw new Error('Either the `apiUrl` or `apiId` must be set. The `apiKey`, `cluster`, and `database` must always be set.')
 	const url = apiUrl || `https://${apiRegion || 'data'}.mongodb-api.com/app/${apiId}/endpoint/data/beta`
 
