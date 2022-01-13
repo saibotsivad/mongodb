@@ -22,11 +22,11 @@ Change categories are:
 ### Removed
 ### Security
 
-<!--
-## [1.0.1](https://github.com/saibotsivad/mongodb/compare/v1.0.0...v1.0.1) - 2022-01-12
--->
+## [0.0.1](https://github.com/saibotsivad/mongodb/compare/v0.0.0...v0.0.1) - 2022-01-12
+### Fixed
+- Correction to paths so IDEs recognize the module correctly.
 
-## [1.0.0](https://github.com/saibotsivad/mongodb/tree/v1.0.0) - 2022-01-12
+## [0.0.0](https://github.com/saibotsivad/mongodb/tree/v0.0.0) - 2022-01-12
 ### Added
 - Created the base project from [saibotsivad/init](https://github.com/saibotsivad/init).
 - Basic functionality and documentation in the readme.
