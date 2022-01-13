@@ -22,7 +22,7 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.1-0.0.2](https://github.com/saibotsivad/mongodb/compare/v0.0.0...v0.0.2) - 2022-01-12
+## [0.0.1-0.0.3](https://github.com/saibotsivad/mongodb/compare/v0.0.0...v0.0.3) - 2022-01-12
 ### Fixed
 - Correction to paths so IDEs recognize the module correctly.
 

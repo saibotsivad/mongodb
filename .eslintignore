@@ -9,3 +9,5 @@
 
 # globbed things
 globbed-*.js
+
+*.ts
