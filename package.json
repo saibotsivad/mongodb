@@ -19,6 +19,7 @@
     "*.d.ts"
   ],
   "scripts": {
+    "prepublishOnly": "npm run build",
     "test": "eslint src/*.js",
     "build": "bundt src/index.js"
   },
