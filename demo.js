@@ -14,6 +14,6 @@ const db = mongodb({
 	fetch: post,
 })
 
-db.findOne({ filter: 'Jacob Smith' }).then(document => {
+db.findOne({ filter: 'Jacob Smith' }).then(({ document }) => {
 	console.log(document)
 })

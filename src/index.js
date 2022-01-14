@@ -1,9 +1,3 @@
-const upsertable = upsert => res => ({
-	matchedCount: res.matchedCount,
-	modifiedCount: res.modifiedCount,
-	upsertedId: upsert && res.upsertedId,
-})
-
 class MongoError extends Error {
 	constructor({ error, error_code, link }) {
 		super(error)
@@ -52,36 +46,127 @@ export function mongodb({
 	}
 
 	return {
-		aggregate: async pipeline => request('aggregate', { pipeline }).then(res => res.documents),
-		deleteOne: async ({ filter }) => request('deleteOne', { filter }).then(res => res.deletedCount),
-		deleteMany: async ({ filter }) => request('deleteMany', { filter }).then(res => res.deletedCount),
-		find: async ({ filter, projection, sort, limit, skip }) => request('find', {
+		/**
+		 * Runs an aggregation pipeline and returns the result set of the final stage of the pipeline
+		 * as an array of documents.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.pipeline - The MongoDB pipeline array.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ documents: Array<Object> }>} - The returned list of documents.
+		 */
+		aggregate: async ({ pipeline }, overrides) => request('aggregate', { pipeline }, overrides),
+
+		/**
+		 * Delete the first document matching the filter, and return the number of documents deleted.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.filter - The MongoDB filter object.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ deletedCount: Number }>} - The number of documents deleted.
+		 */
+		deleteOne: async ({ filter }, overrides) => request('deleteOne', { filter }, overrides),
+
+		/**
+		 * Delete all documents matching the filter, and return the number of documents deleted.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.filter - The MongoDB filter object.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ deletedCount: Number }>} - The number of documents deleted.
+		 */
+		deleteMany: async ({ filter }, overrides) => request('deleteMany', { filter }, overrides),
+
+		/**
+		 * Find and return a list of documents.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} [parameters.filter] - The MongoDB filter object.
+		 * @param {Object} [parameters.projection] - The MongoDB projection object.
+		 * @param {Object} [parameters.sort] - The MongoDB sort object, e.g. `{ completed: -1 }`.
+		 * @param {Number} [parameters.limit] - The maximum number of documents to return.
+		 * @param {Number} [parameters.skip] - The number of documents to skip, aka the cursor position.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ documents: Array<Object> }>} - The documents matching the parameters.
+		 */
+		find: async ({ filter, projection, sort, limit, skip }, overrides) => request('find', {
 			filter,
 			projection,
 			sort,
 			limit,
 			skip,
-		}).then(res => res.documents),
+		}, overrides),
+
+		/**
+		 * Find and return the first document matching the filter.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} [parameters.filter] - The MongoDB filter object.
+		 * @param {Object} [parameters.projection] - The MongoDB projection object.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ document: Object }>} - The document matching the parameters.
+		 */
 		findOne: async ({ filter, projection }, overrides) => request('findOne', {
 			filter,
 			projection,
-		}, overrides).then(res => res.document),
-		insertOne: async ejsonDocument => request('insertOne', { document: ejsonDocument }).then(res => res.insertedId),
-		insertMany: async ejsonDocuments => request('insertMany', { documents: ejsonDocuments }).then(res => res.insertedIds),
-		replaceOne: async ({ filter, replacement, upsert }) => request('replaceOne', {
+		}, overrides),
+
+		/**
+		 * Insert a single document. Must be an EJSON document.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.document - The EJSON document to insert.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ insertedId: String }>} - The identifier of the inserted document.
+		 */
+		insertOne: async ({ document }, overrides) => request('insertOne', { document }, overrides),
+
+		/**
+		 * Insert multiple documents at once. Must be EJSON documents.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.documents - The EJSON documents to insert.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ insertedIds: Array<String> }>} - The identifiers of the inserted document.
+		 */
+		insertMany: async ({ documents }, overrides) => request('insertMany', { documents }, overrides),
+
+		/**
+		 * Replace or upsert a single document. Must be an EJSON document.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.filter - The MongoDB filter object.
+		 * @param {Object} parameters.replacement - The EJSON document to replace or upsert.
+		 * @param {Boolean} [parameters.upsert] - If set to true, it will insert the `replacement` document if no documents match the `filter`.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ matchedCount: Number, modifiedCount: Number, upsertedId: String }>} - The request results.
+		 */
+		replaceOne: async ({ filter, replacement, upsert }, overrides) => request('replaceOne', {
 			filter,
 			replacement,
 			upsert,
-		}).then(upsertable(upsert)),
-		updateOne: async ({ filter, update, upsert }) => request('updateOne', {
+		}, overrides),
+
+		/**
+		 * Update or upsert a single document. Must be an EJSON document.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.filter - The MongoDB filter object.
+		 * @param {Object} parameters.update - The EJSON document to update or upsert.
+		 * @param {Boolean} [parameters.upsert] - If set to true, it will insert the `replacement` document if no documents match the `filter`.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ matchedCount: Number, modifiedCount: Number, upsertedId: String }>} - The request results.
+		 */
+		updateOne: async ({ filter, update, upsert }, overrides) => request('updateOne', {
 			filter,
 			update,
 			upsert,
-		}).then(upsertable(upsert)),
-		updateMany: async ({ filter, update, upsert }) => request('updateMany', {
+		}, overrides),
+
+		/**
+		 * Update many documents or upsert a single document. Must be an EJSON document.
+		 * @param {Object} parameters - The request parameters.
+		 * @param {Object} parameters.filter - The MongoDB filter object.
+		 * @param {Object} parameters.update - The EJSON document to update or upsert.
+		 * @param {Boolean} [parameters.upsert] - If set to true, it will insert the `replacement` document if no documents match the `filter`.
+		 * @param {Object} [overrides] - Overrides specific to this request.
+		 * @return {Promise<{ matchedCount: Number, modifiedCount: Number, upsertedId: String }>} - The request results.
+		 */
+		updateMany: async ({ filter, update, upsert }, overrides) => request('updateMany', {
 			filter,
 			update,
 			upsert,
-		}).then(upsertable(upsert)),
+		}, overrides),
 	}
 }

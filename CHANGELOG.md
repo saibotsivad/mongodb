@@ -22,6 +22,12 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.4](https://github.com/saibotsivad/mongodb/compare/v0.0.3...v0.0.4) - 2022-01-14
+### Added
+- JSDoc documentation for all the functions. I tried adding a little more to the TS definition.
+### Changed
+- Made the function results more consistent with the MongoDB Data API, e.g. calling `deleteOne` returns `{ deletedCount: Number }` instead of `Number`. This was done to make it easier to add properties as the Data API becomes more feature complete.
+
 ## [0.0.1-0.0.3](https://github.com/saibotsivad/mongodb/compare/v0.0.0...v0.0.3) - 2022-01-12
 ### Fixed
 - Correction to paths so IDEs recognize the module correctly.

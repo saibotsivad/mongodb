@@ -69,30 +69,38 @@ await db.findOne(
 [Runs an aggregation pipeline](https://docs.atlas.mongodb.com/api/data-api-resources/#run-an-aggregation-pipeline) and returns the result set of the final stage of the pipeline as an array of documents.
 
 ```ts
-(pipeline: MongoPipeline) =>
-	Promise<Array<MongoDocument>>
+(
+	{ pipeline: MongoPipeline },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ documents: Array<Object> }>
 ```
 
 ```js
-await db.aggregate([
-	{
-		$group: {
-			_id: "$status",
-			count: { $sum: 1 },
-			text: { $push: "$text" }
-		}
-	},
-	{ $sort: { count: 1 } }
-])
+await db.aggregate({
+	pipeline: [
+		{
+			$group: {
+				_id: "$status",
+				count: { $sum: 1 },
+				text: { $push: "$text" }
+			}
+		},
+		{ $sort: { count: 1 } }
+	]
+})
 ```
 
 ### deleteOne
 
-[Delete a single document](https://docs.atlas.mongodb.com/api/data-api-resources/#delete-a-single-document) and return the number of documents deleted.
+[Delete the first document](https://docs.atlas.mongodb.com/api/data-api-resources/#delete-a-single-document) matching the filter, and return the number of documents deleted.
 
 ```ts
-({ filter: MongoFilter }) =>
-	Promise<Integer>
+(
+	{ filter: MongoFilter },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ deletedCount: Number }>
 ```
 
 ```js
@@ -106,8 +114,11 @@ await db.deleteOne({
 [Delete multiple documents](https://docs.atlas.mongodb.com/api/data-api-resources/#delete-multiple-documents) and return the number of documents deleted.
 
 ```ts
-({ filter: MongoFilter }) =>
-	Promise<Integer>
+(
+	{ filter: MongoFilter },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ deletedCount: Number }>
 ```
 
 ```js
@@ -121,8 +132,11 @@ await db.deleteMany({
 [Find multiple documents](https://docs.atlas.mongodb.com/api/data-api-resources/#find-multiple-documents) and return a list of those documents.
 
 ```ts
-({ filter: MongoFilter, projection: MongoProjection, sort: MongoSort, limit: Integer, skip: Integer }) =>
-	Promise<Array<MongoDocument>>
+(
+	{ filter: MongoFilter, projection: MongoProjection, sort: MongoSort, limit: Integer, skip: Integer },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ documents: Array<Object> }>
 ```
 
 ```js
@@ -137,8 +151,11 @@ await db.find({
 [Find and return the first document matching the filter](https://docs.atlas.mongodb.com/api/data-api-resources/#find-a-single-document).
 
 ```ts
-({ filter: MongoFilter, projection: MongoProjection }) =>
-	Promise<MongoDocument>
+(
+	{ filter: MongoFilter, projection: MongoProjection },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ document: Object }>
 ```
 
 ```js
@@ -150,8 +167,11 @@ await db.findOne({ filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } } })
 [Insert a single document](https://docs.atlas.mongodb.com/api/data-api-resources/#insert-a-single-document) and return the ID of that document.
 
 ```ts
-(document: EjsonDocument) =>
-	Promise<String>
+(
+	{ document: EjsonDocument },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ insertedId: String }>
 ```
 
 ```js
@@ -164,8 +184,8 @@ await db.insertOne({ type: 'car' })
 [Insert multiple documents at once](https://docs.atlas.mongodb.com/api/data-api-resources/#insert-multiple-documents) and return the generated IDs.
 
 ```ts
-(documents: Array<EjsonDocument>) =>
-	Promise<Array<String>>
+(documents: Array<EjsonDocument>, overrides?: { collection?: string }) =>
+	Promise<{ insertedIds: Array<String> }>
 ```
 
 ```js
@@ -181,8 +201,11 @@ await db.insertMany([
 [Replace or upsert the first document matching the filter](https://docs.atlas.mongodb.com/api/data-api-resources/#replace-a-single-document) and return the matched and modified count, along with the generated ID if a new document was generated.
 
 ```ts
-({ filter: MongoFilter, replacement: EjsonDocument, upsert: Boolean }) =>
-	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId: String }>
+(
+	{ filter: MongoFilter, replacement: EjsonDocument, upsert: Boolean },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
 
 ```js
@@ -197,8 +220,11 @@ await db.replaceOne({
 [Update the first document matching the filter](https://docs.atlas.mongodb.com/api/data-api-resources/#update-a-single-document) and return the matched and modified count, along with the generated ID if a new document was generated.
 
 ```ts
-({ filter: MongoFilter, update: MongoUpdate, upsert: Boolean }) =>
-	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId: String }>
+(
+	{ filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
 
 ```js
@@ -218,8 +244,11 @@ await db.updateOne({
 [Update all documents matching the filter](https://docs.atlas.mongodb.com/api/data-api-resources/#update-multiple-documents) and return the matched and modified count, along with the generated ID if a new document was generated.
 
 ```ts
-({ filter: MongoFilter, update: MongoUpdate, upsert: Boolean }) =>
-	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId: String }>
+(
+	{ filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
+	overrides?: { collection?: string }
+) =>
+	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
 
 ```js
