@@ -6,7 +6,7 @@ export function mongodb(params: {
 	cluster: string;
 	database: string;
 	collection?: string;
-	fetch: (url: string, options: object) => Promise<object>;
+	fetch?: (url: string, options: object) => Promise<object>;
 }): {
 	aggregate;
 	deleteOne;

@@ -22,7 +22,7 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.4](https://github.com/saibotsivad/mongodb/compare/v0.0.3...v0.0.4) - 2022-01-14
+## [0.0.4-0.0.5](https://github.com/saibotsivad/mongodb/compare/v0.0.3...v0.0.5) - 2022-01-14
 ### Added
 - JSDoc documentation for all the functions. I tried adding a little more to the TS definition.
 ### Changed
