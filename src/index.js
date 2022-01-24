@@ -34,7 +34,7 @@ export function mongodb({
 					dataSource: cluster,
 					database: database,
 					collection: overrides?.collection || collection,
-					parameters,
+					...(parameters || {}),
 				}),
 			})
 		} catch (error) {

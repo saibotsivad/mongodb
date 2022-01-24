@@ -22,9 +22,10 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.6](https://github.com/saibotsivad/mongodb/compare/v0.0.5...v0.0.6) - 2022-01-24
+## [0.0.6-0.0.7](https://github.com/saibotsivad/mongodb/compare/v0.0.5...v0.0.7) - 2022-01-24
 ### Fixed
 - Creating can return a 201, and errors aren't always JSON bodies.
+- Parameters needs rest expansion.
 
 ## [0.0.4-0.0.5](https://github.com/saibotsivad/mongodb/compare/v0.0.3...v0.0.5) - 2022-01-14
 ### Added
