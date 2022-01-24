@@ -40,8 +40,14 @@ export function mongodb({
 		} catch (error) {
 			result = error
 		}
-		if (typeof result.data === 'string') result.data = JSON.parse(result.data)
-		if (result.statusCode !== 200) throw new MongoError(result.data)
+		if (typeof result.data === 'string') {
+			try {
+				result.data = JSON.parse(result.data)
+			} catch (ignore) {
+				// the data was not JSON, most likely an error response
+			}
+		}
+		if (result.statusCode !== 200 && result.statusCode !== 201) throw new MongoError(result.data)
 		return result.data
 	}
 
