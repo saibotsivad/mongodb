@@ -1,6 +1,24 @@
 import { post } from 'httpie'
 import { mongodb } from './src/index.js'
 
+/**
+ * A small shim to make `httpie` behave closer to `fetch`.
+ * @param {Object} response - The response from the `httpie` POST request.
+ * @return {{ json: function(): Promise<Object>, text: function(): Promise<String>, status: number }} - The `fetch`-like response object.
+ */
+const postFetchShim = response => ({
+	status: response.statusCode,
+	json: async () => {
+		// There is a bug with the Data API where it returns the `Content-Type` header
+		// as `text/plain; charset=utf-8` and then `httpie` correctly translates the body
+		// to a string. I'm trying to raise an issue with the @MongoDBDev team, so I'll
+		// see if that gets anywhere...
+		if (typeof response.data === 'string' && response.data.startsWith('{')) return JSON.parse(response.data)
+		return response.data
+	},
+	text: async () => response.data,
+})
+
 const CLUSTER_NAME = 'Cluster0'
 const DB_NAME = 'TestDatabase'
 const COLL_NAME = 'TestCollection'
@@ -11,9 +29,9 @@ const db = mongodb({
 	cluster: CLUSTER_NAME,
 	database: DB_NAME,
 	collection: COLL_NAME,
-	fetch: post,
+	fetch: async (url, parameters) => post(url, parameters).then(postFetchShim, postFetchShim),
 })
 
-db.findOne({ filter: 'Jacob Smith' }).then(({ document }) => {
-	console.log(document)
+db.find({ filter: { name: 'Jacob Smith' } }).then(({ documents }) => {
+	console.log(documents)
 })

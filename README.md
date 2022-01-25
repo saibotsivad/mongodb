@@ -23,13 +23,17 @@ const db = mongodb({
 	cluster: 'myCluster3',
 	database: 'myDatabase',
 	collection: 'vehicles',
-	fetch: globalThis.fetch
-	// or e.g. `import { post } from 'httpie'` and then `fetch: post`
+	// if you're using the globalThis.fetch you don't need to specify it
+	fetch: globalThis.fetch,
+	// you can also provide your own `fetch`-like implementation
+	// see ./demo.js for an example
 })
 
 const car = await db.findOne({ filter: { type: 'car' } })
 // => { _id: "61df...", type: "car", ...etc }
 ```
+
+> Note: if you don't have `fetch` (e.g. you're in a NodeJS environment), you can use something like [`httpie`](https://github.com/lukeed/httpie/) but have a look at the [demo code](./demo.js) to see the shim you'll need to add due to a bug with the Data API response.
 
 ## Instantiate
 
@@ -38,11 +42,11 @@ Import the `{ mongodb }` function and instantiate with the following properties:
 * `apiKey: string` *(always required)* - The programmatic API key, generated in the MongoDB Atlas interface.
 * `apiId: string` - The "Data API App ID", which is an identifier unique to each cluster.
 * `apiRegion: string` - Constrain the request to a specific API region, e.g. `us-east-1`. (Default: `data`)
-* `apiUrl: string` - Specify the fully qualified URL prefix, e.g. `https://data.mongodb-api.com/app/my-id/endpoint/data/beta`.
+* `apiUrl: string` - Specify the fully qualified URL prefix, e.g. `https://data.mongodb-api.com/app/my-id/endpoint/data/beta`. Using this property means you do not need the `apiId` property.
 * `cluster: string` - The name of the MongoDB cluster.
 * `database: string` - The name of the MongoDB database.
 * `collection: string` - The name of the collection to use for all requests, unless overridden.
-* `fetch: function` - The function used to make the POST requests. (Default: `globalThis.fetch`)
+* `fetch: function` - The function used to make the POST requests. If you aren't using `fetch` check [the response type definition](./index.d.ts) for guidance. (Default: `globalThis.fetch`)
 
 Notes:
 
@@ -89,6 +93,7 @@ await db.aggregate({
 		{ $sort: { count: 1 } }
 	]
 })
+// => { documents [{ _id: ... }] }
 ```
 
 ### deleteOne
@@ -107,6 +112,7 @@ await db.aggregate({
 await db.deleteOne({
 	filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } }
 })
+// => { deletedCount: 1 }
 ```
 
 ### deleteMany
@@ -125,6 +131,7 @@ await db.deleteOne({
 await db.deleteMany({
 	filter: { status: 'complete' }
 })
+// => { deletedCount: 7 }
 ```
 
 ### find
@@ -144,6 +151,7 @@ await db.find({
 	filter: { status: 'complete' },
 	sort: { completedAt: -1 }
 })
+// => { documents: [{ _id: ... }] }
 ```
 
 ### findOne
@@ -160,6 +168,7 @@ await db.find({
 
 ```js
 await db.findOne({ filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } } })
+// => { document: { _id: ... } }
 ```
 
 ### insertOne
@@ -175,8 +184,8 @@ await db.findOne({ filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } } })
 ```
 
 ```js
-await db.insertOne({ type: 'car' })
-// => '61935189ec53247016a623c9'
+await db.insertOne({ document: { type: 'car' } })
+// => { insertedId: '61935189ec53247016a623c9' }
 ```
 
 ### insertMany
@@ -193,7 +202,7 @@ await db.insertMany([
 	{ type: 'car' },
 	{ type: 'truck' }
 ])
-// => [ '61935189ec53247016a623c9', '61935189ec53247016a623ca' ]
+// => { insertedIds: [ '61935189ec53247016a623c9', '61935189ec53247016a623ca' ] }
 ```
 
 ### replaceOne
@@ -213,6 +222,7 @@ await db.replaceOne({
 	filter: { id: { $oid: '61935189ec53247016a623c9' } },
 	replacement: { type: 'van' }
 })
+// => { matchedCount: 1, modifiedCount: 1, upsertedId: '...' }
 ```
 
 ### updateOne
@@ -237,6 +247,7 @@ await db.updateOne({
 		}
 	}
 })
+// => { matchedCount: 1, modifiedCount: 1, upsertedId: '...' }
 ```
 
 ### updateMany
@@ -261,6 +272,7 @@ await db.updateOne({
 		}
 	}
 })
+// => { matchedCount: 7, modifiedCount: 4 }
 ```
 
 ## License

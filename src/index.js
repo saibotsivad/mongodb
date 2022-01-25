@@ -1,11 +1,3 @@
-class MongoError extends Error {
-	constructor({ error, error_code, link }) {
-		super(error)
-		this.code = error_code
-		this.link = link
-	}
-}
-
 export function mongodb({
 	apiKey,
 	apiId,
@@ -21,34 +13,41 @@ export function mongodb({
 
 	const request = async (name, parameters, overrides) => {
 		if (!collection && !overrides?.collection) throw new Error('Collection name must be set on instantiation or each request.')
-		let result
-		try {
-			result = await fetch(url + '/action/' + name, {
-				method: 'POST',
-				headers: {
-					'content-type': 'application/json',
-					'access-control-request-headers': '*',
-					'api-key': apiKey,
-				},
-				body: JSON.stringify({
-					dataSource: cluster,
-					database: database,
-					collection: overrides?.collection || collection,
-					...(parameters || {}),
-				}),
-			})
-		} catch (error) {
-			result = error
-		}
-		if (typeof result.data === 'string') {
-			try {
-				result.data = JSON.parse(result.data)
-			} catch (ignore) {
-				// the data was not JSON, most likely an error response
+		const response = await fetch(url + '/action/' + name, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+				'access-control-request-headers': '*',
+				'api-key': apiKey,
+			},
+			body: JSON.stringify({
+				dataSource: cluster,
+				database: database,
+				collection: overrides?.collection || collection,
+				...(parameters || {}),
+			}),
+		})
+		// If the response was a success, the body will be JSON, otherwise... it
+		// sometimes is JSON, sometimes text... the Data API is still in Beta, so
+		// please do raise in issue on Github if anything stabilizes.
+		const status = response.status || response.statusCode || 500
+		if (status === 200 || status === 201) {
+			return response.json()
+		} else {
+			let error = await response.text()
+			if (error.includes('{')) {
+				try {
+					error = JSON.parse(error)
+				} catch (ignore) {
+					// not valid JSON
+					error = { error, status }
+				}
+			} else {
+				// also not valid JSON
+				error = { error, status }
 			}
+			return Promise.reject(error)
 		}
-		if (result.statusCode !== 200 && result.statusCode !== 201) throw new MongoError(result.data)
-		return result.data
 	}
 
 	return {

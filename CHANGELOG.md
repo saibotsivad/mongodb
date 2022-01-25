@@ -22,6 +22,11 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.8](https://github.com/saibotsivad/mongodb/compare/v0.0.7...v0.0.8) - 2022-01-25
+### Fixed
+- Tidy up the response handling code a bit after experimenting with the Data API responses more thoroughly.
+- Several example corrections to the docs.
+
 ## [0.0.6-0.0.7](https://github.com/saibotsivad/mongodb/compare/v0.0.5...v0.0.7) - 2022-01-24
 ### Fixed
 - Creating can return a 201, and errors aren't always JSON bodies.
