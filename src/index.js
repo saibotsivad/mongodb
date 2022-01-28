@@ -1,3 +1,13 @@
+class MongodbError extends Error {
+	constructor({ error, error_code, link }, status) {
+		super(error)
+		this.name = 'MongodbError'
+		this.title = error_code
+		this.status = status
+		this.meta = { link }
+	}
+}
+
 export function mongodb({
 	apiKey,
 	apiId,
@@ -27,26 +37,36 @@ export function mongodb({
 				...(parameters || {}),
 			}),
 		})
-		// If the response was a success, the body will be JSON, otherwise... it
-		// sometimes is JSON, sometimes text... the Data API is still in Beta, so
-		// please do raise in issue on Github if anything stabilizes.
+		// If the response was a success, the body will be JSON, but the `Content-Type`
+		// will be `text/plain`, but also sometimes it's actually JSON, but sometimes
+		// it's just text... the Data API is still in Beta, so please do raise in issue
+		// on this libraries Github page if anything changes or stabilizes.
+		// https://github.com/saibotsivad/mongodb/issues
 		const status = response.status || response.statusCode || 500
 		if (status === 200 || status === 201) {
 			return response.json()
 		} else {
-			let error = await response.text()
-			if (error.includes('{')) {
-				try {
-					error = JSON.parse(error)
-				} catch (ignore) {
-					// not valid JSON
-					error = { error, status }
+			// Errors that are at the Data API service level, for example authentication
+			// and pathname validation, return a JSON error object. Errors that are at
+			// the database level, for example errors returned from the `insertOne` call,
+			// return a plaintext error string.
+			let error = response.headers['content-type']?.includes('application/json')
+				? await response.json()
+				: await response.text()
+			if (typeof error === 'string') {
+				if (error.includes('{')) {
+					try {
+						error = JSON.parse(error)
+					} catch (ignore) {
+						// not valid JSON
+						error = { error }
+					}
+				} else {
+					// also not valid JSON
+					error = { error }
 				}
-			} else {
-				// also not valid JSON
-				error = { error, status }
 			}
-			return Promise.reject(error)
+			return Promise.reject(new MongodbError(error, status))
 		}
 	}
 

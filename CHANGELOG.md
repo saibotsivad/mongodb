@@ -14,13 +14,17 @@ Change categories are:
 * `Fixed` for any bug fixes.
 * `Security` to invite users to upgrade in case of vulnerabilities.
 
-## [Unreleased](https://github.com/saibotsivad/mongodb/compare/v0.0.0...HEAD)
+## Unreleased
 ### Added
 ### Changed
 ### Deprecated
 ### Fixed
 ### Removed
 ### Security
+
+## [0.0.9](https://github.com/saibotsivad/mongodb/compare/v0.0.8...v0.0.9) - 2022-01-28
+### Fixed
+- After using this for a while now, I was able to make the error handling more consistent.
 
 ## [0.0.8](https://github.com/saibotsivad/mongodb/compare/v0.0.7...v0.0.8) - 2022-01-25
 ### Fixed
