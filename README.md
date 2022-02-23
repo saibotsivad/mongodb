@@ -74,7 +74,7 @@ await db.findOne(
 
 ```ts
 (
-	{ pipeline: MongoPipeline },
+	parameters: { pipeline: MongoPipeline },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ documents: Array<Object> }>
@@ -102,7 +102,7 @@ await db.aggregate({
 
 ```ts
 (
-	{ filter: MongoFilter },
+	parameters: { filter: MongoFilter },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ deletedCount: Number }>
@@ -121,7 +121,7 @@ await db.deleteOne({
 
 ```ts
 (
-	{ filter: MongoFilter },
+	parameters: { filter: MongoFilter },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ deletedCount: Number }>
@@ -140,7 +140,7 @@ await db.deleteMany({
 
 ```ts
 (
-	{ filter: MongoFilter, projection: MongoProjection, sort: MongoSort, limit: Integer, skip: Integer },
+	parameters: { filter: MongoFilter, projection: MongoProjection, sort: MongoSort, limit: Integer, skip: Integer },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ documents: Array<Object> }>
@@ -160,7 +160,7 @@ await db.find({
 
 ```ts
 (
-	{ filter: MongoFilter, projection: MongoProjection },
+	parameters: { filter: MongoFilter, projection: MongoProjection },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ document: Object }>
@@ -177,7 +177,7 @@ await db.findOne({ filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } } })
 
 ```ts
 (
-	{ document: EjsonDocument },
+	parameters: { document: EjsonDocument },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ insertedId: String }>
@@ -193,15 +193,20 @@ await db.insertOne({ document: { type: 'car' } })
 [Insert multiple documents at once](https://docs.atlas.mongodb.com/api/data-api-resources/#insert-multiple-documents) and return the generated IDs.
 
 ```ts
-(documents: Array<EjsonDocument>, overrides?: { collection?: string }) =>
+(
+	parameters: { documents: Array<EjsonDocument> },
+	overrides?: { collection?: string }
+) =>
 	Promise<{ insertedIds: Array<String> }>
 ```
 
 ```js
-await db.insertMany([
-	{ type: 'car' },
-	{ type: 'truck' }
-])
+await db.insertMany({
+	documents: [
+		{ type: 'car' },
+		{ type: 'truck' }
+	]
+})
 // => { insertedIds: [ '61935189ec53247016a623c9', '61935189ec53247016a623ca' ] }
 ```
 
@@ -211,7 +216,7 @@ await db.insertMany([
 
 ```ts
 (
-	{ filter: MongoFilter, replacement: EjsonDocument, upsert: Boolean },
+	parameters: { filter: MongoFilter, replacement: EjsonDocument, upsert: Boolean },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
@@ -231,7 +236,7 @@ await db.replaceOne({
 
 ```ts
 (
-	{ filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
+	parameters: { filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
@@ -256,7 +261,7 @@ await db.updateOne({
 
 ```ts
 (
-	{ filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
+	parameters: { filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
 	overrides?: { collection?: string }
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>

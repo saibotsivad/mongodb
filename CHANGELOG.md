@@ -22,6 +22,10 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.10](https://github.com/saibotsivad/mongodb/compare/v0.0.9...v0.0.10) - 2022-02-23
+### Fixed
+- Documentation only: the `insertMany` examples were incorrectly written.
+
 ## [0.0.9](https://github.com/saibotsivad/mongodb/compare/v0.0.8...v0.0.9) - 2022-01-28
 ### Fixed
 - After using this for a while now, I was able to make the error handling more consistent.

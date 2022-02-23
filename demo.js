@@ -34,9 +34,13 @@ const db = mongodb({
 })
 
 db
-	.find({ filter: { name: 'Jacob Smith' } })
-	.then(({ documents }) => {
-		console.log(documents)
+	.insertMany({ documents: [{ name: 'Bilbo Baggins' }] })
+	// .insertOne({ document: { _id: '1P', name: 'Bilbo Baggins' } })
+	// .find({ filter: { name: 'Bilbo Baggins' } })
+	// .find({ filter: { _id: '1P' } })
+	// .findOne({ filter: { _id: '1P' } })
+	.then(response => {
+		console.log(response)
 	})
 	.catch(error => {
 		console.error(error)
