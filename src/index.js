@@ -19,7 +19,7 @@ export function mongodb({
 	fetch = globalThis.fetch,
 }) {
 	if (!apiUrl && !apiId || !apiKey || !cluster || !database) throw new Error('Either the `apiUrl` or `apiId` must be set. The `apiKey`, `cluster`, and `database` must always be set.')
-	const url = apiUrl || `https://${apiRegion || 'data'}.mongodb-api.com/app/${apiId}/endpoint/data/beta`
+	const url = apiUrl || `https://${apiRegion || 'data'}.mongodb-api.com/app/${apiId}/endpoint/data/v1`
 
 	const request = async (name, parameters, overrides) => {
 		if (!collection && !overrides?.collection) throw new Error('Collection name must be set on instantiation or each request.')
@@ -39,7 +39,7 @@ export function mongodb({
 		})
 		// If the response was a success, the body will be JSON, but the `Content-Type`
 		// will be `text/plain`, but also sometimes it's actually JSON, but sometimes
-		// it's just text... the Data API is still in Beta, so please do raise in issue
+		// it's just text... the Data API is in v1, so please do raise in issue
 		// on this libraries Github page if anything changes or stabilizes.
 		// https://github.com/saibotsivad/mongodb/issues
 		const status = response.status || response.statusCode || 500

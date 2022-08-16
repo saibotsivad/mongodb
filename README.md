@@ -42,7 +42,7 @@ Import the `{ mongodb }` function and instantiate with the following properties:
 * `apiKey: string` *(always required)* - The programmatic API key, generated in the MongoDB Atlas interface.
 * `apiId: string` - The "Data API App ID", which is an identifier unique to each cluster.
 * `apiRegion: string` - Constrain the request to a specific API region, e.g. `us-east-1`. (Default: `data`)
-* `apiUrl: string` - Specify the fully qualified URL prefix, e.g. `https://data.mongodb-api.com/app/my-id/endpoint/data/beta`. Using this property means you do not need the `apiId` property.
+* `apiUrl: string` - Specify the fully qualified URL prefix, e.g. `https://data.mongodb-api.com/app/my-id/endpoint/data/v1`. Using this property means you do not need the `apiId` property.
 * `cluster: string` - The name of the MongoDB cluster.
 * `database: string` - The name of the MongoDB database.
 * `collection: string` - The name of the collection to use for all requests, unless overridden.
