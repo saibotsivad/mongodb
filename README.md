@@ -47,6 +47,14 @@ The fully qualified URL, e.g. something like this:
 https://data.mongodb-api.com/app/data-abc123/endpoint/data/v1
 ```
 
+#### `interpose: function`
+
+Called immediately prior to making the `fetch` request, with the name of the request (e.g. `findOne`) and the body of the request. Useful for things like logging and debugging, but you can also mutate the object if needed.
+
+```ts
+type interpose = (input: { name: string, body: Object }) => { body: Object }
+```
+
 ## Request Requirements
 
 These are properties that are **required** for every request.

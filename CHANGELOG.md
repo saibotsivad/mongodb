@@ -22,6 +22,11 @@ Change categories are:
 ### Removed
 ### Security
 
+## [1.1.0](https://github.com/saibotsivad/mongodb/compare/v0.0.10...v1.1.0) - 2022-09-30
+### Added
+- The `interpose` method allows you to inspect and mutate requests immediately prior to
+  sending them, for things like logging and debugging.
+
 ## [1.0.0](https://github.com/saibotsivad/mongodb/compare/v0.0.10...v1.0.0) - 2022-09-30
 
 Since MongoDB Data API is now out of beta, this library is going to v1 as well! 🎉

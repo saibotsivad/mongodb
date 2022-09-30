@@ -27,10 +27,18 @@ export function mongodb({
 	database,
 	collection,
 	fetch = globalThis.fetch,
+	interpose = passThrough => passThrough,
 }) {
 	if (!apiUrl || !apiKey) throw new Error('The `apiUrl` and `apiKey` must always be set.')
 
 	const request = async (name, parameters, overrides) => {
+		const { body } = interpose({
+			name,
+			body: {
+				...(parameters || {}),
+				...makeAndAssertConnectionIsValid({ dataSource, database, collection }, overrides),
+			},
+		})
 		const response = await fetch(apiUrl + '/action/' + name, {
 			method: 'POST',
 			headers: {
@@ -38,10 +46,7 @@ export function mongodb({
 				'access-control-request-headers': '*',
 				'api-key': apiKey,
 			},
-			body: JSON.stringify({
-				...(parameters || {}),
-				...makeAndAssertConnectionIsValid({ dataSource, database, collection }, overrides),
-			}),
+			body: JSON.stringify(body),
 		})
 		const status = response.status || response.statusCode || 500
 		if (status === 200 || status === 201) {

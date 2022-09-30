@@ -294,6 +294,43 @@ assert.deepStrictEqual(
 	},
 )
 
+console.log('The "interpose" function.')
+const currentDate = new Date().toISOString()
+const interposeDb = mongodb({
+	apiKey,
+	apiUrl,
+	dataSource: 'BAD',
+	database: 'BAD',
+	collection: 'BAD',
+	fetch,
+	interpose: ({ name, body }) => {
+		assert.equal(name, 'findOne')
+		delete body.projection
+		assert.deepStrictEqual(
+			body,
+			{
+				filter: { currentDate },
+				dataSource: 'BAD',
+				database: 'BAD',
+				collection: 'BAD',
+			},
+			'it has the bad request',
+		)
+		// You can return whatever you want and totally mutate everything.
+		return {
+			body: {
+				filter: { name: 'Bilbo Baggins' },
+				// use the good ones again
+				dataSource,
+				database,
+				collection,
+			},
+		}
+	},
+})
+const interposed = await interposeDb.findOne({ filter: { currentDate } })
+assert.equal(interposed.document.type, 'hobbit', 'original query would not have found it but modified did')
+
 console.log('db.deleteMany')
 const out99 = await db.deleteMany({
 	filter: {
