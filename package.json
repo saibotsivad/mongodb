@@ -21,7 +21,9 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
-    "test": "eslint src/*.js",
+    "test": "npm run test:lint && npm run test:demo",
+    "test:lint": "eslint src/*.js",
+    "test:demo": "node demo/demo.js",
     "build": "bundt src/index.js"
   },
   "repository": {
