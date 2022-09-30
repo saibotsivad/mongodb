@@ -2,6 +2,8 @@
 
 Simple wrapper for the [MongoDB Data API](https://docs.atlas.mongodb.com/api/data-api/).
 
+> **v1 Update!** MongoDB is out of beta, so this library is now v1! 🎉
+
 ## Install
 
 The usual ways:
@@ -20,7 +22,7 @@ import { mongodb } from '@saibotsivad/mongodb'
 const db = mongodb({
 	apiKey: 'AKAIDEXAMPLEKEY',
 	apiId: 'my-assigned-id',
-	cluster: 'myCluster3',
+	dataSource: 'myCluster3',
 	database: 'myDatabase',
 	collection: 'vehicles',
 	// if you're using the globalThis.fetch you don't need to specify it
@@ -33,38 +35,81 @@ const car = await db.findOne({ filter: { type: 'car' } })
 // => { _id: "61df...", type: "car", ...etc }
 ```
 
-> Note: if you don't have `fetch` (e.g. you're in a NodeJS environment), you can use something like [`httpie`](https://github.com/lukeed/httpie/) but have a look at the [demo code](./demo.js) to see the shim you'll need to add due to a bug with the Data API response.
-
 ## Instantiate
 
 Import the `{ mongodb }` function and instantiate with the following properties:
 
-* `apiKey: string` *(always required)* - The programmatic API key, generated in the MongoDB Atlas interface.
-* `apiId: string` - The "Data API App ID", which is an identifier unique to each cluster.
-* `apiRegion: string` - Constrain the request to a specific API region, e.g. `us-east-1`. (Default: `data`)
-* `apiUrl: string` - Specify the fully qualified URL prefix, e.g. `https://data.mongodb-api.com/app/my-id/endpoint/data/beta`. Using this property means you do not need the `apiId` property.
-* `cluster: string` - The name of the MongoDB cluster.
-* `database: string` - The name of the MongoDB database.
-* `collection: string` - The name of the collection to use for all requests, unless overridden.
-* `fetch: function` - The function used to make the POST requests. If you aren't using `fetch` check [the response type definition](./index.d.ts) for guidance. (Default: `globalThis.fetch`)
+#### `apiKey: string` **(always required)**
 
-Notes:
+The programmatic API key, generated using the MongoDB Atlas interface.
 
-- Either the `apiUrl` or `apiId` are **required** on instantiation.
-- The `collection` can either be set at the instantiation level, or on each request, e.g. `db.findOne({ filter }, { collection: 'other-collection' })`.
+#### `apiUrl: string`
+
+The fully qualified URL prefix, e.g. something like this:
+
+```
+https://us-east-1.mongodb-api.com/app/data-abc123/endpoint/data/v1
+```
+
+## Request Requirements
+
+These are properties that are **required** for every request.
+
+You can set them when you create a `mongodb` instance, or provide them on the individual request.
+
+> *Note:* setting them on the request will *override* values provided at initialization.
+
+#### `dataSource: string`
+
+The name of the MongoDB cluster to use for all requests, unless overridden.
+
+#### `database: string`
+
+The name of the MongoDB database to use for all requests, unless overridden.
+
+#### `collection: string`
+
+The name of the collection to use for all requests, unless overridden.
+
+## Environment Specific
+
+This library was written to use modern Web API features, such as `fetch`. However, you can pass in shims as parameters.
+
+#### `fetch: function`
+
+This library makes use of the [`fetch` Web API](https://developer.mozilla.org/en-US/docs/Web/API/fetch) using `globalThis.fetch` to make requests to the MongoDB Data API.
+
+To make requests in an environment without `fetch`, e.g. NodeJS, you will need to provide your own fetch-like implementation.
+
+Check [the response type definition](./index.d.ts) for guidance, but for example you could use something like the very lightweight [`httpie`](https://github.com/lukeed/httpie/) library:
+
+```js
+import { post } from 'httpie'
+
+const remap = response => ({
+	status: response.statusCode,
+	headers: response.headers,
+	json: async () => response.data,
+	text: async () => response.data,
+})
+
+const fetch = async (url, parameters) => post(url, parameters).then(remap, remap)
+```
 
 ## Methods
 
 The available methods follow the [Data API Resources](https://docs.atlas.mongodb.com/api/data-api-resources/) exactly, so go read those for more details.
 
-Each one can be overridden with a second property, which is an object containing the following properties:
-
-* `collection: string` - The name of the collection to use for this specific request.
+Each one can be overridden with a second property, which is an object containing the earlier "Request Requirements" properties.
 
 ```js
 await db.findOne(
 	{ filter: { type: 'car' } },
-	{ collection: 'AlternateTable' }
+	{
+		dataSource: 'AlternateCluster',
+		database: 'AlternateDatabase',
+		collection: 'AlternateTable',
+	},
 )
 ```
 

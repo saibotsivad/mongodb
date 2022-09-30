@@ -1,76 +1,96 @@
 {
 	"env": {
-		"es6": true,
-		"browser": true,
-		"node": true
+		"es6": true
 	},
+	"extends": [
+		"eslint:recommended"
+	],
 	"parserOptions": {
-		"ecmaVersion": 2021,
+		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
-	"globals": {
-		// eslint doesn't support Node16 yet? https://github.com/eslint/eslint/issues/11524
-		"BigInt": true,
-		"globalThis": true
-	},
-	"extends": "eslint:recommended",
 	"rules": {
 		"array-bracket-spacing": [
 			"error",
 			"always",
 			{
-				"objectsInArrays": false,
-				"arraysInArrays": false
+				"objectsInArrays": true,
+				"arraysInArrays": true
 			}
 		],
-		"no-irregular-whitespace": [
+		"block-spacing": [
 			"error",
+			"always"
+		],
+		"brace-style": [
+			"error",
+			"1tbs",
 			{
-				"skipStrings": false
+				"allowSingleLine": true
 			}
 		],
 		"comma-dangle": [
 			"error",
 			"always-multiline"
 		],
-		"eqeqeq": [
+		"comma-spacing": [
 			"error",
-			"always"
-		],
-		"no-undef": [
-			"error"
-		],
-		"indent": [
-			"error",
-			"tab"
-		],
-		"linebreak-style": [
-			"error",
-			"unix"
+			{
+				"before": false,
+				"after": true
+			}
 		],
 		"eol-last": [
 			"error",
 			"always"
 		],
-		"block-spacing": [
+		"eqeqeq": [
 			"error",
 			"always"
 		],
-		"no-return-await": "error",
-		"no-useless-rename": "error",
-		"object-curly-spacing": [
+		"indent": [
 			"error",
-			"always"
-		],
-		"semi": [
-			"error",
-			"never"
+			"tab"
 		],
 		"keyword-spacing": [
 			"error",
 			{
 				"before": true
 			}
+		],
+		"linebreak-style": [
+			"error",
+			"unix"
+		],
+		"no-eval": "error",
+		"no-implied-eval": "error",
+		"no-irregular-whitespace": [
+			"error",
+			{
+				"skipStrings": false
+			}
+		],
+		"no-new": "error",
+		"no-return-await": "error",
+		"no-unexpected-multiline": "error",
+		"no-useless-rename": "error",
+		"no-var": [
+			"error"
+		],
+		"object-curly-spacing": [
+			"error",
+			"always"
+		],
+		"quotes": [
+			"error",
+			"single",
+			{
+				"avoidEscape": true
+			}
+		],
+		"semi": [
+			"error",
+			"never"
 		],
 		"space-before-blocks": [
 			"error",
@@ -80,37 +100,13 @@
 			"error",
 			{
 				"anonymous": "always",
-				"named": "never",
-				"asyncArrow": "always"
+				"asyncArrow": "always",
+				"named": "never"
 			}
 		],
 		"space-in-parens": [
 			"error",
 			"never"
-		],
-		"no-eval": "error",
-		"no-implied-eval": "error",
-		"no-new": "error",
-		"no-unexpected-multiline": "error",
-		"no-unused-vars": [
-			"error"
-		],
-		"no-var": [
-			"error"
-		],
-		"brace-style": [
-			"error",
-			"1tbs",
-			{
-				"allowSingleLine": true
-			}
-		],
-		"key-spacing": [
-			"error",
-			{
-				"beforeColon": false,
-				"afterColon": true
-			}
 		],
 		"valid-jsdoc": [
 			"error",
