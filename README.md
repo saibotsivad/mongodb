@@ -81,21 +81,20 @@ This library makes use of the [`fetch` Web API](https://developer.mozilla.org/en
 
 To make requests in an environment without `fetch`, e.g. NodeJS, you will need to provide your own fetch-like implementation.
 
-For example, you could use something like very lightweight [`httpie`](https://github.com/lukeed/httpie/) but have a look at the [demo code](./demo.js) to see the shim you'll need to add due to a bug with the Data API response.
+Check [the response type definition](./index.d.ts) for guidance, but for example you could use something like the very lightweight [`httpie`](https://github.com/lukeed/httpie/) library:
 
-The function used to make the POST requests. If you aren't using `fetch` check [the response type definition](./index.d.ts) for guidance. (Default: `globalThis.fetch`)
+```js
+import { post } from 'httpie'
 
-<!--
-TODO need to handle `ejson`
-https://www.mongodb.com/docs/atlas/api/data-api/#specify-the-request-data-format
--->
+const remap = response => ({
+	status: response.statusCode,
+	headers: response.headers,
+	json: async () => response.data,
+	text: async () => response.data,
+})
 
----
-
-Notes:
-
-- Either the `apiUrl` or `apiId` are **required** on instantiation.
-- The `collection` can either be set at the instantiation level, or on each request, e.g. `db.findOne({ filter }, { collection: 'other-collection' })`.
+const fetch = async (url, parameters) => post(url, parameters).then(remap, remap)
+```
 
 ## Methods
 
