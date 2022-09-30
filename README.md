@@ -21,14 +21,10 @@ import { mongodb } from '@saibotsivad/mongodb'
 
 const db = mongodb({
 	apiKey: 'AKAIDEXAMPLEKEY',
-	apiId: 'my-assigned-id',
+	apiUrl: 'https://data.mongodb-api.com/app/data-abc123/endpoint/data/v1',
 	dataSource: 'myCluster3',
 	database: 'myDatabase',
 	collection: 'vehicles',
-	// if you're using the globalThis.fetch you don't need to specify it
-	fetch: globalThis.fetch,
-	// you can also provide your own `fetch`-like implementation
-	// see ./demo.js for an example
 })
 
 const car = await db.findOne({ filter: { type: 'car' } })
@@ -43,64 +39,61 @@ Import the `{ mongodb }` function and instantiate with the following properties:
 
 The programmatic API key, generated using the MongoDB Atlas interface.
 
-#### `apiUrl: string`
+#### `apiUrl: string` **(always required)**
 
-The fully qualified URL prefix, e.g. something like this:
+The fully qualified URL, e.g. something like this:
 
 ```
-https://us-east-1.mongodb-api.com/app/data-abc123/endpoint/data/v1
+https://data.mongodb-api.com/app/data-abc123/endpoint/data/v1
 ```
 
 ## Request Requirements
 
 These are properties that are **required** for every request.
 
-You can set them when you create a `mongodb` instance, or provide them on the individual request.
+You can set them when you create a `mongodb` instance, or override or provide them on the individual request:
 
-> *Note:* setting them on the request will *override* values provided at initialization.
+```js
+const db = mongodb({
+	apiKey: 'AKAIDEXAMPLEKEY',
+	apiUrl: 'https://data.mongodb-api.com/app/data-abc123/endpoint/data/v1',
+	dataSource: 'myCluster1',
+	database: 'myDatabase',
+	collection: 'vehicles',
+})
+
+// override `collection` for this one request
+const car = await db.findOne({ filter: { type: 'hobbit' } }, { collection: 'people' })
+// => { _id: "42fd...", type: "hobbit", ...etc }
+```
 
 #### `dataSource: string`
 
-The name of the MongoDB cluster to use for all requests, unless overridden.
+The name of the MongoDB cluster.
 
 #### `database: string`
 
-The name of the MongoDB database to use for all requests, unless overridden.
+The name of the MongoDB database.
 
 #### `collection: string`
 
-The name of the collection to use for all requests, unless overridden.
+The name of the collection.
 
 ## Environment Specific
 
-This library was written to use modern Web API features, such as `fetch`. However, you can pass in shims as parameters.
-
 #### `fetch: function`
 
-This library makes use of the [`fetch` Web API](https://developer.mozilla.org/en-US/docs/Web/API/fetch) using `globalThis.fetch` to make requests to the MongoDB Data API.
+This library was written to use the [`fetch` Web API](https://developer.mozilla.org/en-US/docs/Web/API/fetch) using `globalThis.fetch` to make requests to the MongoDB Data API.
 
-To make requests in an environment without `fetch`, e.g. NodeJS, you will need to provide your own fetch-like implementation.
+To make requests in an environment *without* `fetch`, e.g. NodeJS, you will need to provide your own fetch-like implementation.
 
-Check [the response type definition](./index.d.ts) for guidance, but for example you could use something like the very lightweight [`httpie`](https://github.com/lukeed/httpie/) library:
-
-```js
-import { post } from 'httpie'
-
-const remap = response => ({
-	status: response.statusCode,
-	headers: response.headers,
-	json: async () => response.data,
-	text: async () => response.data,
-})
-
-const fetch = async (url, parameters) => post(url, parameters).then(remap, remap)
-```
+Check [the response type definition](./index.d.ts) for interface requirements, but for example you could use something like the very lightweight [`httpie`](https://github.com/lukeed/httpie/) library, like in [the demo](./demo/fetch-shim.js).
 
 ## Methods
 
 The available methods follow the [Data API Resources](https://docs.atlas.mongodb.com/api/data-api-resources/) exactly, so go read those for more details.
 
-Each one can be overridden with a second property, which is an object containing the earlier "Request Requirements" properties.
+Each one can be overridden with a second property, which is an object containing the earlier "Request Requirements" properties, e.g.:
 
 ```js
 await db.findOne(
@@ -120,7 +113,7 @@ await db.findOne(
 ```ts
 (
 	parameters: { pipeline: MongoPipeline },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ documents: Array<Object> }>
 ```
@@ -148,7 +141,7 @@ await db.aggregate({
 ```ts
 (
 	parameters: { filter: MongoFilter },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ deletedCount: Number }>
 ```
@@ -167,7 +160,7 @@ await db.deleteOne({
 ```ts
 (
 	parameters: { filter: MongoFilter },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ deletedCount: Number }>
 ```
@@ -186,7 +179,7 @@ await db.deleteMany({
 ```ts
 (
 	parameters: { filter: MongoFilter, projection: MongoProjection, sort: MongoSort, limit: Integer, skip: Integer },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ documents: Array<Object> }>
 ```
@@ -206,7 +199,7 @@ await db.find({
 ```ts
 (
 	parameters: { filter: MongoFilter, projection: MongoProjection },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ document: Object }>
 ```
@@ -223,7 +216,7 @@ await db.findOne({ filter: { _id: { $oid: '6193ebd53821e5ec5b4f6c3b' } } })
 ```ts
 (
 	parameters: { document: EjsonDocument },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ insertedId: String }>
 ```
@@ -240,7 +233,7 @@ await db.insertOne({ document: { type: 'car' } })
 ```ts
 (
 	parameters: { documents: Array<EjsonDocument> },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ insertedIds: Array<String> }>
 ```
@@ -262,7 +255,7 @@ await db.insertMany({
 ```ts
 (
 	parameters: { filter: MongoFilter, replacement: EjsonDocument, upsert: Boolean },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
@@ -282,7 +275,7 @@ await db.replaceOne({
 ```ts
 (
 	parameters: { filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
@@ -307,7 +300,7 @@ await db.updateOne({
 ```ts
 (
 	parameters: { filter: MongoFilter, update: MongoUpdate, upsert: Boolean },
-	overrides?: { collection?: string }
+	overrides?: { dataSource?: string, database?: string, collection?: string },
 ) =>
 	Promise<{ matchedCount: Integer, modifiedCount: Integer, upsertedId?: String }>
  ```
