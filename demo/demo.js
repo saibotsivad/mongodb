@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 
-import { mongodb } from '../src/index.js'
+import { mongodb } from '../dist/index.mjs'
 import { fetch } from './fetch-shim.js'
 
 const apiUrl = process.env.MONGODB_API_URL
@@ -183,7 +183,7 @@ console.log('db.findOne')
 const out1 = await db.findOne({
 	filter: {
 		_id: { $oid: insertedId },
-	}
+	},
 })
 assert.equal(out1.document._id, insertedId, 'It should be found.')
 
@@ -191,7 +191,7 @@ console.log('db.deleteOne')
 const out2 = await db.deleteOne({
 	filter: {
 		_id: { $oid: insertedId },
-	}
+	},
 })
 assert.equal(out2.deletedCount, 1, 'Deleted the document.')
 
@@ -221,11 +221,11 @@ assert.equal(documents.length, 2, 'Found both documents')
 console.log('db.updateOne')
 const out3 = await db.updateOne({
 	filter: {
-		_id: { $oid: documents[0]._id }
+		_id: { $oid: documents[0]._id },
 	},
 	update: {
-		$set: { pipe: true }
-	}
+		$set: { pipe: true },
+	},
 })
 assert.equal(out3.matchedCount, 1)
 assert.equal(out3.modifiedCount, 1)
@@ -236,8 +236,8 @@ const out4 = await db.updateMany({
 		type: 'hobbit',
 	},
 	update: {
-		$set: { teaTime: true }
-	}
+		$set: { teaTime: true },
+	},
 })
 assert.equal(out4.matchedCount, 2)
 assert.equal(out4.modifiedCount, 2)
@@ -254,9 +254,9 @@ updatedHobbits[0].age = '111'
 delete updatedHobbits[0]._id
 const out5 = await db.replaceOne({
 	filter: {
-		_id: updatedHobbits[0]._id
+		_id: updatedHobbits[0]._id,
 	},
-	replacement: updatedHobbits[0]
+	replacement: updatedHobbits[0],
 })
 assert.equal(out5.matchedCount, 1)
 assert.equal(out5.modifiedCount, 1)
@@ -290,7 +290,7 @@ assert.deepStrictEqual(
 	{
 		name: 'Samwise Gamgee',
 		type: 'hobbit',
-		teaTime: true
+		teaTime: true,
 	},
 )
 

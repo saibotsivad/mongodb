@@ -8,7 +8,7 @@ name: test
 
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ '*' ]
 
 jobs:
   build:
@@ -24,10 +24,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm run test
+    - run: npm run lint
+    - run: npm run build
+    - run: npm run demo
       env:
         MONGODB_API_URL: ${{secrets.MONGODB_API_URL}}
         MONGODB_API_KEY: ${{secrets.MONGODB_API_KEY}}
         MONGODB_DATABASE_NAME: ${{secrets.MONGODB_DATABASE_NAME}}
         MONGODB_CLUSTER_NAME: ${{secrets.MONGODB_CLUSTER_NAME}}
-    - run: npm run build
