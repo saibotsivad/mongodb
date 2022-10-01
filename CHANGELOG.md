@@ -22,6 +22,28 @@ Change categories are:
 ### Removed
 ### Security
 
+## [1.1.0](https://github.com/saibotsivad/mongodb/compare/v0.0.10...v1.1.0) - 2022-09-30
+### Added
+- The `interpose` method allows you to inspect and mutate requests immediately prior to
+  sending them, for things like logging and debugging.
+
+## [1.0.0](https://github.com/saibotsivad/mongodb/compare/v0.0.10...v1.0.0) - 2022-09-30
+
+Since MongoDB Data API is now out of beta, this library is going to v1 as well! 🎉
+
+### Added
+- Full test suite (it's the demo code) that actually connects to a MongoDB Data API
+  instance to verify that all requests are being made correctly. (Note to my future
+  self: this is using a free version, which will likely be automatically spun down
+  due to inactivity. I will need to go spin it back up for tests to pass.)
+### Changed
+- BREAKING: Simplified the interface a bit, by requiring the fully qualified URL instead of region
+  and/or app ID. Here are the [MongoDB URL docs](https://www.mongodb.com/docs/atlas/api/data-api-resources/#base-url).
+- BREAKING: Renamed `cluster` to `dataSource` to match their parameter names better.
+- Change the default-vs-overrides a bit: you don't *need* to specify the `dataSource`, `database`,
+  or `collection` properties at initialization. If you do, you can still specify them at
+  the request to override the defaults.
+
 ## [0.0.10](https://github.com/saibotsivad/mongodb/compare/v0.0.9...v0.0.10) - 2022-02-23
 ### Fixed
 - Documentation only: the `insertMany` examples were incorrectly written.

@@ -2,46 +2,52 @@ class MongodbError extends Error {
 	constructor({ error, error_code, link }, status) {
 		super(error)
 		this.name = 'MongodbError'
-		this.title = error_code
 		this.status = status
-		this.meta = { link }
+		if (error_code) this.title = error_code
+		if (link) this.meta = { link }
 	}
+}
+
+const requiredConnectionParameters = [ 'dataSource', 'database', 'collection' ]
+const makeAndAssertConnectionIsValid = (inits, overrides) => {
+	const connection = {}
+	const notSet = []
+	for (const key of requiredConnectionParameters) {
+		connection[key] = overrides?.[key] || inits?.[key]
+		if (!connection[key]) notSet.push(key)
+	}
+	if (notSet.length) throw new Error('One or more request parameters were not set: ' + notSet.join(', '))
+	return connection
 }
 
 export function mongodb({
 	apiKey,
-	apiId,
-	apiRegion,
 	apiUrl,
-	cluster,
+	dataSource,
 	database,
 	collection,
 	fetch = globalThis.fetch,
+	interpose = passThrough => passThrough,
 }) {
-	if (!apiUrl && !apiId || !apiKey || !cluster || !database) throw new Error('Either the `apiUrl` or `apiId` must be set. The `apiKey`, `cluster`, and `database` must always be set.')
-	const url = apiUrl || `https://${apiRegion || 'data'}.mongodb-api.com/app/${apiId}/endpoint/data/v1`
+	if (!apiUrl || !apiKey) throw new Error('The `apiUrl` and `apiKey` must always be set.')
 
 	const request = async (name, parameters, overrides) => {
-		if (!collection && !overrides?.collection) throw new Error('Collection name must be set on instantiation or each request.')
-		const response = await fetch(url + '/action/' + name, {
+		const { body } = interpose({
+			name,
+			body: {
+				...(parameters || {}),
+				...makeAndAssertConnectionIsValid({ dataSource, database, collection }, overrides),
+			},
+		})
+		const response = await fetch(apiUrl + '/action/' + name, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
 				'access-control-request-headers': '*',
 				'api-key': apiKey,
 			},
-			body: JSON.stringify({
-				dataSource: cluster,
-				database: database,
-				collection: overrides?.collection || collection,
-				...(parameters || {}),
-			}),
+			body: JSON.stringify(body),
 		})
-		// If the response was a success, the body will be JSON, but the `Content-Type`
-		// will be `text/plain`, but also sometimes it's actually JSON, but sometimes
-		// it's just text... the Data API is in v1, so please do raise in issue
-		// on this libraries Github page if anything changes or stabilizes.
-		// https://github.com/saibotsivad/mongodb/issues
 		const status = response.status || response.statusCode || 500
 		if (status === 200 || status === 201) {
 			return response.json()
@@ -62,7 +68,7 @@ export function mongodb({
 						error = { error }
 					}
 				} else {
-					// also not valid JSON
+					// also not valid JSON, probably plaintext
 					error = { error }
 				}
 			}
