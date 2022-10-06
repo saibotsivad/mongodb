@@ -2,7 +2,7 @@
 
 Simple wrapper for the [MongoDB Data API](https://docs.atlas.mongodb.com/api/data-api/).
 
-> **v1 Update!** MongoDB is out of beta, so this library is now v1! 🎉
+> **v1 Update!** MongoDB's "Data API" is out of beta, so this library is now v1! 🎉
 
 ## Install
 
