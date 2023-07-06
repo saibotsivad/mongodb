@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoNet.MongoDataAPI", "MongoNet.MongoDataAPI.Client\MongoNet.MongoDataAPI.csproj", "{BAE9A12E-E40E-476A-8D89-DBC14A711ACC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoNet.MongoDataAPI.UnitTests", "MongoNet.MongoDataAPI.UnitTests\MongoNet.MongoDataAPI.UnitTests.csproj", "{9A1102A0-B6A3-4253-838D-8090EBEB87B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAE9A12E-E40E-476A-8D89-DBC14A711ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE9A12E-E40E-476A-8D89-DBC14A711ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE9A12E-E40E-476A-8D89-DBC14A711ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE9A12E-E40E-476A-8D89-DBC14A711ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A1102A0-B6A3-4253-838D-8090EBEB87B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A1102A0-B6A3-4253-838D-8090EBEB87B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A1102A0-B6A3-4253-838D-8090EBEB87B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A1102A0-B6A3-4253-838D-8090EBEB87B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E09CCFD5-7361-40FC-809B-A5992A9F33B6}
+	EndGlobalSection
+EndGlobal
