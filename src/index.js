@@ -56,7 +56,11 @@ export function mongodb({
 			// and pathname validation, return a JSON error object. Errors that are at
 			// the database level, for example errors returned from the `insertOne` call,
 			// return a plaintext error string.
-			let error = response.headers['content-type']?.includes('application/json')
+			let error = (
+				typeof response.headers?.get === 'function'
+					? response.headers.get('content-type')
+					: response.headers['content-type']
+			)?.includes('application/json')
 				? await response.json()
 				: await response.text()
 			if (typeof error === 'string') {
