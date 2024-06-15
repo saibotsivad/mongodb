@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { mongodb } from '../dist/index.mjs'
 import { fetch } from './fetch-shim.js'
 
+const nodeVersion = process.version
+
 const apiUrl = process.env.MONGODB_API_URL
 const apiKey = process.env.MONGODB_API_KEY
 const dataSource = process.env.MONGODB_CLUSTER_NAME
@@ -154,7 +156,7 @@ for (const { description, success, initialize, overrides } of differentWaysToSet
 	}
 	let result
 	try {
-		result = await testingDb.insertOne({ document: { description } }, overrides)
+		result = await testingDb.insertOne({ document: { description, nodeVersion } }, overrides)
 	} catch (error) {
 		if (success) {
 			console.error(error)
@@ -174,6 +176,7 @@ console.log('db.insertOne')
 const { insertedId } = await db.insertOne({
 	document: {
 		name: 'Bilbo Baggins',
+		nodeVersion,
 	},
 })
 assert.ok(insertedId, 'The document was correctly inserted.')
@@ -201,10 +204,12 @@ const { insertedIds } = await db.insertMany({
 		{
 			name: 'Bilbo Baggins',
 			type: 'hobbit',
+			nodeVersion,
 		},
 		{
 			name: 'Samwise Gamgee',
 			type: 'hobbit',
+			nodeVersion,
 		},
 	],
 })
@@ -214,6 +219,7 @@ console.log('db.find')
 const { documents } = await db.find({
 	filter: {
 		type: 'hobbit',
+		nodeVersion,
 	},
 })
 assert.equal(documents.length, 2, 'Found both documents')
@@ -234,6 +240,7 @@ console.log('db.updateMany')
 const out4 = await db.updateMany({
 	filter: {
 		type: 'hobbit',
+		nodeVersion,
 	},
 	update: {
 		$set: { teaTime: true },
@@ -247,6 +254,7 @@ const { documents: updatedHobbits } = await db.find({
 	filter: {
 		type: 'hobbit',
 		name: 'Bilbo Baggins',
+		nodeVersion,
 	},
 })
 assert.equal(updatedHobbits.length, 1, 'Found one document')
@@ -265,7 +273,7 @@ console.log('db.aggregate')
 const out6 = await db.aggregate({
 	pipeline: [
 		{
-			$match: { type: 'hobbit' },
+			$match: { type: 'hobbit', nodeVersion },
 		},
 		{
 			$sort: { name: 1 },
@@ -280,6 +288,7 @@ assert.deepStrictEqual(
 	{
 		name: 'Bilbo Baggins',
 		type: 'hobbit',
+		nodeVersion,
 		pipe: true,
 		teaTime: true,
 		age: '111',
@@ -290,6 +299,7 @@ assert.deepStrictEqual(
 	{
 		name: 'Samwise Gamgee',
 		type: 'hobbit',
+		nodeVersion,
 		teaTime: true,
 	},
 )
@@ -309,7 +319,7 @@ const interposeDb = mongodb({
 		assert.deepStrictEqual(
 			body,
 			{
-				filter: { currentDate },
+				filter: { currentDate, nodeVersion },
 				dataSource: 'BAD',
 				database: 'BAD',
 				collection: 'BAD',
@@ -328,16 +338,17 @@ const interposeDb = mongodb({
 		}
 	},
 })
-const interposed = await interposeDb.findOne({ filter: { currentDate } })
+const interposed = await interposeDb.findOne({ filter: { currentDate, nodeVersion } })
 assert.equal(interposed.document.type, 'hobbit', 'original query would not have found it but modified did')
 
 console.log('db.deleteMany')
 const out99 = await db.deleteMany({
 	filter: {
 		type: 'hobbit',
+		nodeVersion,
 	},
 })
 assert.equal(out99.deletedCount, 2, 'Deleted both documents.')
 
-const shouldBeEmpty = await db.find({ filter: {} })
+const shouldBeEmpty = await db.find({ filter: { nodeVersion } })
 assert.equal(shouldBeEmpty.documents.length, 0)

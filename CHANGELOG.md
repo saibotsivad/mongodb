@@ -26,6 +26,7 @@ Change categories are:
 ### Added
 - Support for Web API [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers),
   so you can use the global `fetch` as-is.
+- Updated tests to run against Node.js version 18 and 20 as well as 16 (original).
 ### Fixed
 - Type for option parameters had `cluster` instead of `dataSource`, which was a breaking
   change in `1.0.0`. Types are now fixed. Closes #3
