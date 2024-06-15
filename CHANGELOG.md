@@ -22,7 +22,15 @@ Change categories are:
 ### Removed
 ### Security
 
-## [1.1.0](https://github.com/saibotsivad/mongodb/compare/v0.0.10...v1.1.0) - 2022-09-30
+## [1.2.0](https://github.com/saibotsivad/mongodb/compare/v1.1.0...v1.2.0) - 2024-06-15
+### Added
+- Support for Web API [Headers](https://developer.mozilla.org/en-US/docs/Web/API/Headers),
+  so you can use the global `fetch` as-is.
+### Fixed
+- Type for option parameters had `cluster` instead of `dataSource`, which was a breaking
+  change in `1.0.0`. Types are now fixed. Closes #3
+
+## [1.1.0](https://github.com/saibotsivad/mongodb/compare/v1.0.0...v1.1.0) - 2022-09-30
 ### Added
 - The `interpose` method allows you to inspect and mutate requests immediately prior to
   sending them, for things like logging and debugging.
