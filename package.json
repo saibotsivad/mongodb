@@ -1,6 +1,6 @@
 {
   "name": "@saibotsivad/mongodb",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Simple wrapper for the MongoDB Data API.",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.min.js",
